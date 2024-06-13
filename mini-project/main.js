@@ -1,6 +1,10 @@
 
 const facilityButton = document.getElementById('facility-btn');
 const serviceButton = document.getElementById('service-btn');
+const cartButton = document.getElementById('cart-btn');
+const submitButton = document.getElementsByClassName('submit')[0];
+const closeButton = document.getElementsByClassName('close-btn')[0];
+
 let requestBody = {
     page: 0,
     size: 3,
@@ -18,6 +22,24 @@ serviceButton.addEventListener('click', () => {
     getProducts(requestBody);
 })
 
+cartButton.addEventListener('click', () => {
+    togglePopup(document.getElementsByClassName('total-popup')[0]);
+})
+
+submitButton.addEventListener('click', () => {
+    togglePopup(document.getElementsByClassName('cart-submit')[0]);
+})
+
+closeButton.addEventListener('click', () => {
+    // togglePopup(document.getElementsByClassName('total-popup')[0]);
+    togglePopup(document.getElementsByClassName('cart-submit')[0]);
+})
+
+function togglePopup(element) {
+    element.toggle('active');
+    // document.getElementsByClassName('cart-submit')[0].classList.toggle('active');
+}
+
 function getProducts(requestBody) {
     fetch('http://10.63.161.172:3000/api/get-product', {
     method: 'POST',
@@ -27,9 +49,9 @@ function getProducts(requestBody) {
     body: JSON.stringify(requestBody)
 })
     .then(response => {
-        if (statusCode === 200) {
+        if (response.status === 200) {
             return response.json();
-        } else if (statusCode === 500) {
+        } else if (response.status === 500) {
             alert('Internal Server Error, refresh the page')
         }
     })
@@ -68,4 +90,7 @@ function getProducts(requestBody) {
     .catch(error => console.error(error));
 }
 
+// cartButton.addEventListener('click', () => {
+    
+// })
 

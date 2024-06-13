@@ -11,9 +11,34 @@
     <header class="header">
         <h1>Our Product</h1>
         <div class="cart">
-            <img src="./imgs/cart.png" alt="">
+            <img class="cart-btn" src="./imgs/cart.png" alt="">
             <div class="cart-count">10</div>
-
+        </div>
+        <div class="total-popup">
+            <table class="cart-details">
+                <tr>
+                    <td>Product</td>
+                    <td>Price</td>
+                    <td><button>Delete</button></td>
+                    
+                </tr>
+                <tr>
+                    <td>Test name</td>
+                    <td>Test price</td>
+                    <td><button>Delete</button></td>
+                </tr>
+                <tr>
+                    <td>Test name</td>
+                    <td>Test price</td>
+                    <td><button>Delete</button></td>
+                </tr>
+            </table>
+            
+            <div class="total">
+                <div class="total-desc">Total: $0</div>
+                <button class="submit" onclick="togglePopup()">submit</button>
+            </div>
+            
         </div>
     </header>
     <main>
@@ -28,6 +53,16 @@
         <div class="search">
             <span>Search</span>
             <input type="text" placeholder="Enter product name">
+        </div>
+
+        <div class="cart-submit" id="cart-submit">
+            <div class="overlay"></div>
+            <div class="content">
+                <div class="close-btn" onclick="togglePopup()">&times;</div>
+                <p>Cart submitted successfully.</p>
+                <br>
+                <p>Check order details <a href="">here</a></p>
+            </div>
         </div>
 
         <section class="products">
