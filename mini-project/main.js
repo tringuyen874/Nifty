@@ -1,7 +1,7 @@
 
 const facilityButton = document.getElementById('facility-btn');
 const serviceButton = document.getElementById('service-btn');
-const cartButton = document.getElementById('cart-btn');
+const cartButton = document.querySelector('.cart-btn');
 const submitButton = document.getElementsByClassName('submit')[0];
 const closeButton = document.getElementsByClassName('close-btn')[0];
 
@@ -36,7 +36,7 @@ closeButton.addEventListener('click', () => {
 })
 
 function togglePopup(element) {
-    element.toggle('active');
+    element.classList.toggle('active');
     // document.getElementsByClassName('cart-submit')[0].classList.toggle('active');
 }
 
