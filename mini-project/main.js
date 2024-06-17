@@ -4,6 +4,14 @@ const serviceButton = document.getElementById('service-btn');
 const cartButton = document.querySelector('.cart-btn');
 const submitButton = document.getElementsByClassName('submit')[0];
 const closeButton = document.getElementsByClassName('close-btn')[0];
+const productDetail = document.querySelector('.product-detail');
+const productDetailClose = productDetail.querySelector('.detail .close-btn');
+const cartTotal = document.querySelector('.cart .cart-count');
+const cartAddingButton = document.querySelector('button#cart-adding');
+const cartDetails = document.querySelector('.cart-details');
+
+var productsInCart = [{name: "Test name1", count: 0}, {name: "Test name2", count: 0}];
+
 
 let requestBody = {
     page: 0,
@@ -35,10 +43,37 @@ closeButton.addEventListener('click', () => {
     togglePopup(document.getElementsByClassName('cart-submit')[0]);
 })
 
+function checkProductExists(productName) {
+    return productsInCart.some(function(product) {
+      return product.name === productName;
+    });
+}
+
+cartAddingButton.addEventListener('click', () => {
+    cartTotal.innerHTML = parseInt(cartTotal.innerHTML) + 1;
+    if (!checkProductExists(productName)) {
+        productsInCart.push({name: productName, price: productPrice});
+        const newRow = document.createElement('tr');
+        const productName = document.createElement('td');
+        productName.textContent = productDetail.querySelector('.detail .name').innerHTML;
+        const productPrice = document.createElement('td');
+        productPrice.textContent = productDetail.querySelector('.detail .price').innerHTML;
+        newRow.appendChild(productName);
+        newRow.appendChild(productPrice);
+    } else {
+        productsInCart.count += 1
+    }
+    
+
+    console.log(cartTotal.innerHTML);
+})
+
 function togglePopup(element) {
     element.classList.toggle('active');
     // document.getElementsByClassName('cart-submit')[0].classList.toggle('active');
 }
+
+
 
 function getProducts(requestBody) {
     fetch('http://10.63.161.172:3000/api/get-product', {
@@ -86,9 +121,27 @@ function getProducts(requestBody) {
 
             productContainer[0].appendChild(productElement);
         });
+        var productsList = document.querySelectorAll('.products .product');
+        console.log(productsList);
+        productsList.forEach(product => {
+            product.addEventListener('click', () => {
+                // document.querySelector('.product-detail .img').style.background = `url(${product.querySelector('.product .product-image').style.background})`;
+                document.querySelector('.product-detail .img').setAttribute('style', `background-image: ${product.querySelector('.product .product-image').style.background}`);
+                console.log(product.querySelector('.product-description .name').innerHTML);
+                productDetail.querySelector('.detail #product-name').innerHTML = product.querySelector('.product-description .name').innerHTML;
+                productDetail.querySelector('.detail #product-price').innerHTML = product.querySelector('.product-description .price').innerHTML;
+                togglePopup(productDetail);
+            })
+        })
+        
+        productDetailClose.addEventListener('click', () => {
+            togglePopup(productDetail);
+        })
     })
     .catch(error => console.error(error));
 }
+
+
 
 // cartButton.addEventListener('click', () => {
     

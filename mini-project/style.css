@@ -81,6 +81,7 @@ main {
     /* margin: 10px; */
     /* justify-self: center; */
     align-items: center;
+    cursor: pointer;
 }
 
 @media (max-width: 600px) {
@@ -184,7 +185,7 @@ main {
     z-index: 2;
 }
 
-.cart-submit .close-btn {
+.cart-submit .close-btn, .detail .close-btn{
     position: absolute;
     right: 20px;
     top: 20px;
@@ -221,7 +222,7 @@ main {
     background-color: gray;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) scale(0);
     text-align: center;
     width: 650px;
     padding: 40px;
@@ -237,6 +238,7 @@ main {
     background-position: center !important;
 }
 
-.product-detail .detail {
-    
+.product-detail.active {
+    transition: all 800ms ease-in-out;
+    transform: translate(-50%, -50%) scale(1);
 }
