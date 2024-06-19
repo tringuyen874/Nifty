@@ -8,9 +8,9 @@ const productDetail = document.querySelector('.product-detail');
 const productDetailClose = productDetail.querySelector('.detail .close-btn');
 const cartTotal = document.querySelector('.cart .cart-count');
 const cartAddingButton = document.querySelector('button#cart-adding');
-const cartDetails = document.querySelector('.cart-details');
+// const cartDetails = document.querySelector('.cart-details');
 
-var productsInCart = [{name: "Test name1", count: 0}, {name: "Test name2", count: 0}];
+let productsInCart = [];
 
 
 let requestBody = {
@@ -31,6 +31,7 @@ serviceButton.addEventListener('click', () => {
 })
 
 cartButton.addEventListener('click', () => {
+    renderCart();
     togglePopup(document.getElementsByClassName('total-popup')[0]);
 })
 
@@ -138,17 +139,13 @@ cartAddingButton.addEventListener('click', () => {
     const productPrice = productDetail.querySelector('.detail #product-price').innerHTML;
     if (!checkProductExists(productName)) {
         console.log(productName + ' ' + productPrice);
-        productsInCart.push({name: productName, price: productPrice});
+        productsInCart.push({name: productName, price: productPrice, count: 1});
         console.log(productsInCart);
-        // const newRow = document.createElement('tr');
-        // const productName = document.createElement('td');
-        // productName.textContent = productDetail.querySelector('.detail .product-name').innerHTML;
-        // const productPrice = document.createElement('td');
-        // productPrice.textContent = productDetail.querySelector('.detail .product-price').innerHTML;
-        // newRow.appendChild(productName);
-        // newRow.appendChild(productPrice);
+        
     } else {
-        productsInCart.count += 1
+        const product = productsInCart.find(product => product.name === productName);
+        product.count += 1;
+        // productsInCart.count += 1
     }
     
     // console.log(productName + ' ' + productPrice);
@@ -156,15 +153,21 @@ cartAddingButton.addEventListener('click', () => {
 })
 
 function renderCart() {
+    let cartTable = document.querySelector('.cart-details');
+    let total = 0;
     productsInCart.forEach(product => {
         const newRow = document.createElement('tr');
         const productName = document.createElement('td');
-        productName.textContent = productDetail.querySelector('.detail .product-name').innerHTML;
+        productName.textContent = product.name + ' x' + product.count;
         const productPrice = document.createElement('td');
-        productPrice.textContent = productDetail.querySelector('.detail .product-price').innerHTML;
+        productPrice.textContent = product.price;
         newRow.appendChild(productName);
         newRow.appendChild(productPrice);
+        total += Number(product.price.replace("$", "")) * product.count;
+        cartTable.appendChild(newRow);
     })
+    document.querySelector('.total .total-desc').textContent = `Total: $${total}`
+    
 }
 
 
