@@ -99,7 +99,7 @@ main {
     background-position: center !important;
 }
 
-.product-description {
+.product-details {
     /* all: initial; */
     display: flex !important;
     justify-content: space-between !important;
@@ -242,3 +242,7 @@ main {
     transition: all 800ms ease-in-out;
     transform: translate(-50%, -50%) scale(1);
 }
+
+/* .pagination #previous-btn {
+    visibility: hidden;
+} */
