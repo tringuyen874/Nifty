@@ -1,10 +1,8 @@
-
-
 document.addEventListener('DOMContentLoaded', function(e) {
-    productsInCart = []
+    let productsInCart = []
 
-    let urlParams = new URLSearchParams(window.location.search);
-    let orderId = urlParams.get('orderId');
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
     console.log(orderId);
     document.getElementById('order-id').textContent = orderId;
     let total = 0;
@@ -28,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
         if (response.status === 200) {
             return response.json();
         } else if (response.status === 500) {
-            // alert('Internal Server Error, refresh the page')
             return getProducts(requestBody);
         }
     })

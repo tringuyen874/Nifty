@@ -1,0 +1,10 @@
+body {
+    margin-left: 100px;
+}
+
+.cart-table {
+    margin-top: 20px;
+    margin-left: 100px;
+    width: 80%;
+    border-collapse: collapse;
+}

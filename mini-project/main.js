@@ -13,6 +13,7 @@ const pagingButton = document.querySelector('.pagination');
 const previousBtn = document.getElementById('previous-btn');
 const nextBtn = document.getElementById('next-btn');
 const orderLink = document.getElementById('order-link');
+const searchInput = document.getElementById('search-input');
 
 let productsInCart = [];
 let orderId = '';
@@ -53,7 +54,6 @@ submitButton.addEventListener('click', () => {
 })
 
 closeButton.addEventListener('click', () => {
-    // togglePopup(document.getElementsByClassName('total-popup')[0]);
     togglePopup(document.getElementsByClassName('cart-submit')[0]);
 })
 
@@ -67,7 +67,6 @@ function checkProductExists(productName) {
 
 function togglePopup(element) {
     element.classList.toggle('active');
-    // document.getElementsByClassName('cart-submit')[0].classList.toggle('active');
 }
 
 function clickOutsideListener(element) {
@@ -76,7 +75,6 @@ function clickOutsideListener(element) {
         console.log('event.target is not cart', event.target)
         console.log(element)
         element.classList.remove('active');
-        // cartTable.classList.remove('active');
       } else {
         console.log('event.target is cart', event.target)
       }
@@ -100,7 +98,6 @@ function getProducts(requestBody) {
         if (response.status === 200) {
             return response.json();
         } else if (response.status === 500) {
-            // alert('Internal Server Error, refresh the page')
             return getProducts(requestBody);
         }
     })
@@ -113,41 +110,53 @@ function getProducts(requestBody) {
             const productElement = document.createElement('div');
             productElement.classList.add('product');
 
-            const productImageElement = document.createElement('div');
-            productImageElement.classList.add('product-image');
-            productImageElement.style.background = `url(${product.image})`;
-
-            const productDetailsElement = document.createElement('div');
-            productDetailsElement.classList.add('product-details');
-
-            const nameElement = document.createElement('div');
-            nameElement.classList.add('name');
-            nameElement.textContent = product.name;
-
-
-            const priceElement = document.createElement('div');
-            priceElement.classList.add('price');
-            priceElement.textContent = `$${product.price}`;
-
-            const descriptionElement = document.createElement('div');
-            descriptionElement.classList.add('description');
-            descriptionElement.textContent = product.description;
-            descriptionElement.style.display = 'none';
-
-            const idElement = document.createElement('div');
-            idElement.classList.add('productId');
-            idElement.textContent = product.id;
-            idElement.style.display = 'none';
-
-            productDetailsElement.appendChild(nameElement);
-            productDetailsElement.appendChild(priceElement);
-            productDetailsElement.appendChild(descriptionElement);
-            productDetailsElement.appendChild(idElement);
-
-            productElement.appendChild(productImageElement);
-            productElement.appendChild(productDetailsElement);
-
+            productElement.innerHTML = `
+                <div class="product-image" style="background: url(${product.image})"></div>
+                <div class="product-details">
+                    <div class="name">${product.name}</div>
+                    <div class="price">$${product.price}</div>
+                    <div class="description" style="display: none">${product.description}</div>
+                    <div class="productId" style="display: none">${product.id}</div>
+                </div>
+            `;
             productContainer[0].appendChild(productElement);
+
+
+            // const productImageElement = document.createElement('div');
+            // productImageElement.classList.add('product-image');
+            // productImageElement.style.background = `url(${product.image})`;
+
+            // const productDetailsElement = document.createElement('div');
+            // productDetailsElement.classList.add('product-details');
+
+            // const nameElement = document.createElement('div');
+            // nameElement.classList.add('name');
+            // nameElement.textContent = product.name;
+
+
+            // const priceElement = document.createElement('div');
+            // priceElement.classList.add('price');
+            // priceElement.textContent = `$${product.price}`;
+
+            // const descriptionElement = document.createElement('div');
+            // descriptionElement.classList.add('description');
+            // descriptionElement.textContent = product.description;
+            // descriptionElement.style.display = 'none';
+
+            // const idElement = document.createElement('div');
+            // idElement.classList.add('productId');
+            // idElement.textContent = product.id;
+            // idElement.style.display = 'none';
+
+            // productDetailsElement.appendChild(nameElement);
+            // productDetailsElement.appendChild(priceElement);
+            // productDetailsElement.appendChild(descriptionElement);
+            // productDetailsElement.appendChild(idElement);
+
+            // productElement.appendChild(productImageElement);
+            // productElement.appendChild(productDetailsElement);
+
+
         });
         var productsList = document.querySelectorAll('.products .product');
         console.log(productsList);
@@ -200,6 +209,15 @@ function renderCart() {
         productName.textContent = product.name + ' x' + product.count;
         const productPrice = document.createElement('td');
         productPrice.textContent = product.price;
+        const deleteSection = document.createElement('td');
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => {
+            productsInCart = productsInCart.filter(item => item.name !== product.name);
+            renderCart();
+        });
+        deleteSection.appendChild(deleteBtn);
+        newRow.appendChild(deleteSection);
         newRow.appendChild(productName);
         newRow.appendChild(productPrice);
         total += Number(product.price.replace("$", "")) * product.count;
@@ -221,13 +239,12 @@ paginationLinks.forEach((paginationLinks) => {
         currentPage = paginationLinks;
         console.log(currentPage);
         console.log(requestBody);
-        if (requestBody.page > 0) {
-            previousBtn.style.visibility = '';
+        previousBtn.style.visibility = ''
+        nextBtn.style.visibility = ''
+        if (currentPage.innerHTML == 6) {
+            nextBtn.style.visibility = 'hidden';
         }
-        if (requestBody.page == totalPages) {
-            previousBtn.style.visibility = 'hidden';
-        }
-        if (requestBody.page == 0) {
+        if (currentPage.innerHTML == 1) {
             previousBtn.style.visibility = 'hidden';
         }
         getProducts(requestBody);
@@ -238,8 +255,20 @@ paginationLinks.forEach((paginationLinks) => {
 
 nextBtn.addEventListener('click', function(event) {
     event.preventDefault();
-    if (currentPage.innerHTML == 3) {
-        console.log(currentPage.innerHTML + '')
+    let currentPageNumber = parseInt(currentPage.innerHTML);
+    let nextPageElement = currentPage.nextElementSibling;
+    if (nextPageElement && currentPageNumber < 5) {
+        currentPage.classList.remove('active');
+        nextPageElement.classList.add('active');
+        currentPage = nextPageElement; 
+
+        requestBody.page += 1;
+        getProducts(requestBody);
+
+        previousBtn.style.visibility = 'visible';
+    }
+    if (currentPageNumber == 3) {
+        console.log(currentPageNumber + '')
         paginationLinks.forEach(page => {
             page.innerHTML = parseInt(page.innerHTML) + 3;
         })
@@ -250,7 +279,51 @@ nextBtn.addEventListener('click', function(event) {
         
         requestBody.page += 1;
         getProducts(requestBody);
+    }
+    if (currentPageNumber == 5) {
+        nextBtn.style.visibility = 'hidden';
+        lastPage = document.getElementById('last-page');
+        lastPage.classList.add('active');
+        currentPage.classList.remove('active');
+        currentPage = lastPage;
     } 
+})
+
+previousBtn.addEventListener('click', function(event) {
+    event.preventDefault();
+    let currentPageNumber = parseInt(currentPage.innerHTML);
+    let previousPageElement = currentPage.previousElementSibling;
+    console.log(currentPageNumber);
+    console.log(previousPageElement)
+    if (previousPageElement && currentPageNumber > 1) {
+        currentPage.classList.remove('active');
+        previousPageElement.classList.add('active');
+        currentPage = previousPageElement;
+
+        requestBody.page -= 1;
+        getProducts(requestBody);
+
+        nextBtn.style.visibility = 'visible';
+    }
+    if (currentPageNumber == 4) {
+        console.log(currentPageNumber + '')
+        paginationLinks.forEach(page => {
+            page.innerHTML = parseInt(page.innerHTML) - 3;
+        })
+        lastPage = document.getElementById('last-page');
+        lastPage.classList.add('active');
+        currentPage.classList.remove('active');
+        currentPage = lastPage;
+
+        requestBody.page -= 1;
+        getProducts(requestBody);
+    }
+    if (currentPageNumber == 2) {
+        previousBtn.style.visibility = 'hidden';
+        firstPage = document.getElementById('first-page');
+        firstPage.classList.add('active');
+        currentPage = firstPage;
+    }
 })
 
 let orderRequestBody = {
@@ -272,7 +345,6 @@ function submitOrder(productsInCart) {
         if (response.status === 200) {
             return response.json();
         } else if (response.status === 500) {
-            // alert('Internal Server Error, refresh the page')
             return submitOrder(productsInCart);
         }
     })
@@ -291,4 +363,11 @@ orderLink.addEventListener('click', function(event) {
     submitOrder(productsInCart);
 })
 
-
+searchInput.addEventListener('input', function(event) {
+    event.preventDefault();
+    let searchValue = searchInput.value;
+    console.log(searchValue);
+    requestBody.data.search = searchValue;
+    getProducts(requestBody);
+})
+// https://www.youtube.com/watch?v=TlP5WIxVirU

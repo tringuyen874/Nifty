@@ -47,3 +47,6 @@ JS
   - Tìm hiểu về capturing vs bubbling khi add event vào DOM
   - Biết cách triển khai code tuân theo SOLID và DRY
   - Biết cách triển click outside event
+
+ko cần:  5
+  5
