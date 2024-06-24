@@ -2,9 +2,14 @@ body {
     margin-left: 100px;
 }
 
-.cart-table {
+#cart-table {
     margin-top: 20px;
     margin-left: 100px;
-    width: 80%;
-    border-collapse: collapse;
+    width: 50%;
+    border: 1px solid black;
+}
+
+#cart-table td {
+    border: 1px solid black;
+    padding: 10px;
 }

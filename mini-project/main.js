@@ -17,6 +17,7 @@ const searchInput = document.getElementById('search-input');
 
 let productsInCart = [];
 let orderId = '';
+let productSet = new Set();
 
 let requestBody = {
     page: 0,
@@ -60,7 +61,7 @@ closeButton.addEventListener('click', () => {
 
 function checkProductExists(productName) {
     return productsInCart.some(function(product) {
-      return product.name === productName;
+      return product.productName === productName;
     });
 }
 
@@ -120,43 +121,8 @@ function getProducts(requestBody) {
                 </div>
             `;
             productContainer[0].appendChild(productElement);
-
-
-            // const productImageElement = document.createElement('div');
-            // productImageElement.classList.add('product-image');
-            // productImageElement.style.background = `url(${product.image})`;
-
-            // const productDetailsElement = document.createElement('div');
-            // productDetailsElement.classList.add('product-details');
-
-            // const nameElement = document.createElement('div');
-            // nameElement.classList.add('name');
-            // nameElement.textContent = product.name;
-
-
-            // const priceElement = document.createElement('div');
-            // priceElement.classList.add('price');
-            // priceElement.textContent = `$${product.price}`;
-
-            // const descriptionElement = document.createElement('div');
-            // descriptionElement.classList.add('description');
-            // descriptionElement.textContent = product.description;
-            // descriptionElement.style.display = 'none';
-
-            // const idElement = document.createElement('div');
-            // idElement.classList.add('productId');
-            // idElement.textContent = product.id;
-            // idElement.style.display = 'none';
-
-            // productDetailsElement.appendChild(nameElement);
-            // productDetailsElement.appendChild(priceElement);
-            // productDetailsElement.appendChild(descriptionElement);
-            // productDetailsElement.appendChild(idElement);
-
-            // productElement.appendChild(productImageElement);
-            // productElement.appendChild(productDetailsElement);
-
-
+            const cloneProduct = productElement.cloneNode(true);
+            productSet.add({productName: product.name, productDesc: product.description, productElement: productElement});
         });
         var productsList = document.querySelectorAll('.products .product');
         console.log(productsList);
@@ -206,7 +172,7 @@ function renderCart() {
     productsInCart.forEach(product => {
         const newRow = document.createElement('tr');
         const productName = document.createElement('td');
-        productName.textContent = product.name + ' x' + product.count;
+        productName.textContent = product.productName + ' x' + product.quanlity;
         const productPrice = document.createElement('td');
         productPrice.textContent = product.price;
         const deleteSection = document.createElement('td');
@@ -217,10 +183,10 @@ function renderCart() {
             renderCart();
         });
         deleteSection.appendChild(deleteBtn);
-        newRow.appendChild(deleteSection);
         newRow.appendChild(productName);
         newRow.appendChild(productPrice);
-        total += Number(product.price.replace("$", "")) * product.count;
+        newRow.appendChild(deleteSection);
+        total += Number(product.price.replace("$", "")) * product.quanlity;
         cartTable.appendChild(newRow);
     })
     document.querySelector('.total .total-desc').textContent = `Total: $${total}`
@@ -363,11 +329,19 @@ orderLink.addEventListener('click', function(event) {
     submitOrder(productsInCart);
 })
 
+let debounceTimer;
 searchInput.addEventListener('input', function(event) {
     event.preventDefault();
-    let searchValue = searchInput.value;
-    console.log(searchValue);
-    requestBody.data.search = searchValue;
-    getProducts(requestBody);
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function() {
+        let searchValue = searchInput.value.toLowerCase();
+        productSet.forEach(product => {
+            // console.log(product);
+            const exist = product.productName.toLowerCase().includes(searchValue) 
+            // || product.productDesc.toLowerCase().includes(searchValue);
+            product.productElement.classList.toggle('hidden', !exist);
+        });
+        console.log(searchValue);
+
+    }, 500);
 })
-// https://www.youtube.com/watch?v=TlP5WIxVirU

@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
             newRow.appendChild(productName);
             newRow.appendChild(productCount);
             newRow.appendChild(productPrice);
-            total += Number(product.price) * product.quanlity;
+            total += Number(product.price.replace('$', '')) * product.quanlity;
             cartTable.appendChild(newRow);
         })
         document.getElementById('total-price').textContent = total;
